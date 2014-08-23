@@ -30,7 +30,7 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 		self.window.show_input_panel("Term to replace:", "", self.on_done, None, None)
 
 	def setRepText(self, iText):
-		self.searchText = iText
+		self.repText = iText
 		self.window.show_input_panel("Term to replace:", "", self.on_done, None, None)
 
 	def getNRows(self, cview):
