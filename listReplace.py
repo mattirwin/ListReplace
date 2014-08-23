@@ -3,8 +3,11 @@ import sublime, sublime_plugin
 class listReplaceCommand(sublime_plugin.WindowCommand):
 	searchText = None
 	repText = None
+	searchViewIdx = None
+	repViewIdx = None
 	searchView = None
 	repView = None
+	selList = []
 
 	def reverse_enum(self, L):
 		for index in reversed(xrange(len(L))):
@@ -15,15 +18,36 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 		if (len(ws) < 2):
 			print "Requires at least 2 views/tabs"
 			return
+
+		for idx, cv in enumerate(ws):
+			#nList = cv.file_name().split("/")
+			# print idx, cv.file_name().split("/")[-1]
+			# print cv.file_name().split("/")[-1] + "," + str(idx)
+
+			if cv.file_name() != None :
+				self.selList.append(cv.file_name().split("/")[-1] + "," + str(idx))
+			else:
+				self.selList.append(cv.substr(cv.line(0)).replace(",", "") + "," + str(idx))
+
+		print self.selList
+		print [elem.split(",")[0] for elem in self.selList]
+
 		# these nested callbacks are gross but as a python newb I'm not sure how to fix this...
-		
+		sublime.message_dialog("Choose the target view in the following dropdown")
+		self.window.show_quick_panel([elem.split(",")[0] for elem in self.selList], self.setNothing)
+
 		# self.window.show_input_panel("Term to search:", "", self.setSearchText, None, None)
 
+	def setNothing(self, viewIdx):
+		pass
+
 	def setSearchView(self, viewIdx):
-		self.searchText = viewIdx
+		self.searchViewIdx = viewIdx
+		self.searchView = self.window.views()[viewIdx]
 
 	def setRepView(self, viewIdx):
-		self.repText = viewIdx
+		self.repViewIdx = viewIdx
+		self.repView = self.window.views()[viewIdx]
 
 	def setSearchText(self, iText):
 		self.searchText = iText
@@ -100,6 +124,5 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 				# 	print "no luck"
 				# 	pass
 
-		except ValueError:
+		except:
 			print "error"
-			pass
