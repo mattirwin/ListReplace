@@ -1,6 +1,11 @@
 import sublime, sublime_plugin
 
 class listReplaceCommand(sublime_plugin.WindowCommand):
+	searchText = None
+	repText = None
+	searchView = None
+	repView = None
+
 	def reverse_enum(self, L):
 		for index in reversed(xrange(len(L))):
 			yield index, L[index]
@@ -10,11 +15,24 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 		if (len(ws) < 2):
 			print "Requires at least 2 views/tabs"
 			return
-		# print ws
+		# these nested callbacks are gross but as a python newb I'm not sure how to fix this...
 		
-		self.window.show_input_panel("Term to search:", "", self.on_done, None, None)
-		pass
-		
+		# self.window.show_input_panel("Term to search:", "", self.setSearchText, None, None)
+
+	def setSearchView(self, viewIdx):
+		self.searchText = viewIdx
+
+	def setRepView(self, viewIdx):
+		self.repText = viewIdx
+
+	def setSearchText(self, iText):
+		self.searchText = iText
+		self.window.show_input_panel("Term to replace:", "", self.on_done, None, None)
+
+	def setRepText(self, iText):
+		self.searchText = iText
+		self.window.show_input_panel("Term to replace:", "", self.on_done, None, None)
+
 	def getNRows(self, cview):
 		endChar = cview.size()
 		numRows = cview.rowcol(endChar)[0] + 1
@@ -49,7 +67,8 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 				sview.end_edit()
 			except:
 				print "makeReplacements error"
-				pass
+
+
 
 	def on_done(self, searchText):
 		try:
