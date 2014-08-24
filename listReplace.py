@@ -44,7 +44,7 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 			return
 		transIdx = int(self.selList[viewIdx].split(',')[-1])
 		self.searchView = self.window.views()[transIdx]
-		del self.selList[transIdx]
+		del self.selList[viewIdx]
 
 		sublime.message_dialog("Choose the source view in the following dropdown")
 		self.window.show_quick_panel([elem.split(",")[0] for elem in self.selList], self.setRepView)
@@ -54,7 +54,7 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 			return
 		transIdx = int(self.selList[viewIdx].split(',')[-1])
 		self.repView = self.window.views()[transIdx]
-		del self.selList[transIdx]
+		del self.selList[viewIdx]
 
 		self.window.show_input_panel("Enter a search term (regex):", "", self.setSearchTerm, None, None)
 
@@ -66,23 +66,6 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 		self.repTerm = iTerm
 		self.final_run()
 
-	def getNRows(self, cview):
-		endChar = cview.size()
-		numRows = cview.rowcol(endChar)[0] + 1
-		return numRows
-
-	def getRows(self, cview):
-		endChar = cview.size()
-		numRows = cview.rowcol(endChar)[0] + 1
-		outList = []
-
-		for x in range(0, numRows):
-			ctp = cview.text_point(x,0)
-			lineContent = cview.substr(cview.line(ctp))
-			outList.append(lineContent)
-
-		return outList
-
 	def getNMatches(self, cview, tomatch):
 		foundList = cview.find_all(tomatch)
 		numMatches = len(foundList)
@@ -91,7 +74,6 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 	def getMatches(self, cview, tomatch):
 		foundList = cview.find_all(tomatch)
 		outList = [cview.substr(x) for x in foundList]
-		print outList
 		return outList
 
 
@@ -122,35 +104,3 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 
 			self.makeReplacements(self.searchView, self.searchTerm, replacements)
 
-	def on_done(self, searchText):
-		try:
-			#sublime.status_message("User said: " + user_input)
-			print "post input..."
-			searchView = self.window.views()[0]
-			replaceView = self.window.views()[1]
-
-			print "now for numRows..."
-			searchNum = self.getNMatches(searchView, searchText)
-			repNum = self.getNRows(replaceView)
-			print searchNum
-			print repNum
-
-			if searchNum != repNum:
-				sublime.error_message("Number of search terms and replacement terms do not match")
-			else:
-				sublime.status_message("Search and Match are ready!!!")
-
-				rowContent = self.getRows(replaceView)
-
-				self.makeReplacements(searchView, searchText, rowContent)
-
-				# try:
-				# 	sEdit = searchView.begin_edit()
-				# 	searchView.replace(sEdit, searchView.line(0), "going nuts")
-				# 	searchView.end_edit()
-				# except:
-				# 	print "no luck"
-				# 	pass
-
-		except:
-			print "error"
