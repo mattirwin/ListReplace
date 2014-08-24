@@ -1,3 +1,9 @@
+"""
+ListReplace
+Licensed under MIT
+Copyright (c) 2014 Matt Irwin <info@irwinone.com>
+"""
+
 import sublime, sublime_plugin
 
 class listReplaceCommand(sublime_plugin.WindowCommand):
