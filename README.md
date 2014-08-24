@@ -14,8 +14,8 @@ It requires at least 2 open tabs in a window to run. The number of search terms 
 
 The plugin will prompt for the following:
 
-1. Choose the target tab(view): where your search and replacement will be run
-2. Choose the source tab(view): where your replacements will be sourced from
+1. Choose the target view in the following dropdown: where your search and replacement will be run
+2. Choose the source view in the following dropdown: where your replacements will be sourced from
 3. Enter a search term (regex): your target window will be searched for this term
 4. Enter a replacement term (regex): your source window will be searched for this term, matches will be used to replace matches in the target window
 

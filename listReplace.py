@@ -1,10 +1,8 @@
 import sublime, sublime_plugin
 
 class listReplaceCommand(sublime_plugin.WindowCommand):
-	searchText = None
-	repText = None
-	searchViewIdx = None
-	repViewIdx = None
+	searchTerm = None
+	repTerm = None
 	searchView = None
 	repView = None
 	selList = []
@@ -14,16 +12,18 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 			yield index, L[index]
 
 	def run(self):
+		self.searchTerm = None
+		self.repTerm = None
+		self.searchView = None
+		self.repView = None
+		self.selList = []
+
 		ws = self.window.views()
 		if (len(ws) < 2):
 			print "Requires at least 2 views/tabs"
 			return
 
 		for idx, cv in enumerate(ws):
-			#nList = cv.file_name().split("/")
-			# print idx, cv.file_name().split("/")[-1]
-			# print cv.file_name().split("/")[-1] + "," + str(idx)
-
 			if cv.file_name() != None :
 				self.selList.append(cv.file_name().split("/")[-1] + "," + str(idx))
 			else:
@@ -32,30 +32,39 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 		print self.selList
 		print [elem.split(",")[0] for elem in self.selList]
 
-		# these nested callbacks are gross but as a python newb I'm not sure how to fix this...
+		# these nested callbacks are really gross but as a python newb I'm not sure how to fix this...
 		sublime.message_dialog("Choose the target view in the following dropdown")
-		self.window.show_quick_panel([elem.split(",")[0] for elem in self.selList], self.setNothing)
-
-		# self.window.show_input_panel("Term to search:", "", self.setSearchText, None, None)
+		self.window.show_quick_panel([elem.split(",")[0] for elem in self.selList], self.setSearchView)
 
 	def setNothing(self, viewIdx):
 		pass
 
 	def setSearchView(self, viewIdx):
-		self.searchViewIdx = viewIdx
-		self.searchView = self.window.views()[viewIdx]
+		if viewIdx == -1 :
+			return
+		transIdx = int(self.selList[viewIdx].split(',')[-1])
+		self.searchView = self.window.views()[transIdx]
+		del self.selList[transIdx]
+
+		sublime.message_dialog("Choose the source view in the following dropdown")
+		self.window.show_quick_panel([elem.split(",")[0] for elem in self.selList], self.setRepView)
 
 	def setRepView(self, viewIdx):
-		self.repViewIdx = viewIdx
-		self.repView = self.window.views()[viewIdx]
+		if viewIdx == -1 :
+			return
+		transIdx = int(self.selList[viewIdx].split(',')[-1])
+		self.repView = self.window.views()[transIdx]
+		del self.selList[transIdx]
 
-	def setSearchText(self, iText):
-		self.searchText = iText
-		self.window.show_input_panel("Term to replace:", "", self.on_done, None, None)
+		self.window.show_input_panel("Enter a search term (regex):", "", self.setSearchTerm, None, None)
 
-	def setRepText(self, iText):
-		self.repText = iText
-		self.window.show_input_panel("Term to replace:", "", self.on_done, None, None)
+	def setSearchTerm(self, iTerm):
+		self.searchTerm = iTerm
+		self.window.show_input_panel("Enter a replacement term (regex):", "", self.setRepTerm, None, None)
+
+	def setRepTerm(self, iTerm):
+		self.repTerm = iTerm
+		self.final_run()
 
 	def getNRows(self, cview):
 		endChar = cview.size()
@@ -79,6 +88,13 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 		numMatches = len(foundList)
 		return numMatches
 
+	def getMatches(self, cview, tomatch):
+		foundList = cview.find_all(tomatch)
+		outList = [cview.substr(x) for x in foundList]
+		print outList
+		return outList
+
+
 	def makeReplacements(self, sview, tomatch, rowContent):
 		foundList = sview.find_all(tomatch)
 
@@ -90,9 +106,21 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 				sview.replace(sEdit, fLoc, rowContent[idx])
 				sview.end_edit()
 			except:
-				print "makeReplacements error"
+				#sublime.error_message("listReplace - Error during makeReplacements")
+				print "listReplace - Error during makeReplacements"
 
+	def final_run(self):
+		searchNum = self.getNMatches(self.searchView, self.searchTerm)
+		repNum = self.getNMatches(self.repView, self.repTerm)
 
+		if searchNum != repNum:
+			sublime.error_message("Number of search terms and replacement terms do not match")
+		else:
+			sublime.status_message("Search and Match are ready!!!")
+
+			replacements = self.getMatches(self.repView, self.repTerm)
+
+			self.makeReplacements(self.searchView, self.searchTerm, replacements)
 
 	def on_done(self, searchText):
 		try:
@@ -108,9 +136,9 @@ class listReplaceCommand(sublime_plugin.WindowCommand):
 			print repNum
 
 			if searchNum != repNum:
-				print "Number of search terms and replacement terms do not match"
+				sublime.error_message("Number of search terms and replacement terms do not match")
 			else:
-				print "Search and Match are ready!!!"
+				sublime.status_message("Search and Match are ready!!!")
 
 				rowContent = self.getRows(replaceView)
 
