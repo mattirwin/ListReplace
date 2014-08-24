@@ -1,5 +1,6 @@
 """
 ListReplace
+v 0.1.0
 Licensed under MIT
 Copyright (c) 2014 Matt Irwin <info@irwinone.com>
 """
