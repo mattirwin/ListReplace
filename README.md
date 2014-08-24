@@ -14,8 +14,8 @@ It requires at least 2 open tabs in a window to run. The number of search terms 
 
 The plugin will prompt for the following:
 
-1. Choose the target view in the following dropdown: where your search and replacement will be run
-2. Choose the source view in the following dropdown: where your replacements will be sourced from
+1. Choose the target tab(view): where your search and replacement will be run
+2. Choose the source tab(view): where your replacements will be sourced from
 3. Enter a search term (regex): your target window will be searched for this term
 4. Enter a replacement term (regex): your source window will be searched for this term, matches will be used to replace matches in the target window
 
@@ -110,3 +110,16 @@ The plugin runs and Tab 1 now looks like this:
 ```
 
 What could have taken minutes took seconds! Yay! You take off work early and go drinking with movie stars. Win.
+
+License
+=======
+
+ListReplace is released under the MIT license.
+
+Copyright (c) 2014 Matt Irwin info@irwinone.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
