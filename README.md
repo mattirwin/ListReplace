@@ -2,7 +2,7 @@ ListReplace Sublime Text 2 Plugin
 =================================
 v.0.1.0
 
-This is a port of a script I wrote back when I was coding in BBEdit.  It ended up being the most productive script I ever wrote myself for BBEdit.  Now here it is for Sublime Text.
+This is a port of a script I wrote back when I was coding in BBEdit.  It ended up being the most productive script I ever wrote myself for BBEdit.  Now here it is for Sublime Text 2.
 
 ##What it does
 
@@ -110,6 +110,18 @@ The plugin runs and Tab 1 now looks like this:
 ```
 
 What could have taken minutes took seconds! Yay! You take off work early and go drinking with movie stars. Win.
+
+---
+
+##Todos:
+
+As is probably evident, I'm a total Python newb so I'm sure this plugin could be better. 
+
+1. **Eliminate nested Callbacks for all user input.**  In JS I would use promises to deal with this, and there are libraries that feature to Python. I'm not clear if that's the best route for something like this however.
+2. **Using existing search and replace buffers instead of asking the user.** This is how I did this in BBEdit, but I didn't see anything allowing access to this in the ST2 api. Maybe I'm missing something or it's still possible some other way.
+3. **Add options to allow for fast/default setups**.
+
+---
 
 License
 =======
