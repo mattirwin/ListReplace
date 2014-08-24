@@ -23,8 +23,6 @@ Once the above input is retrieved the plugin will check that the number of searc
 
 ###Example
 
-How this works or why it might be useful, might be a little hard to follow at this point, here is an example:
-
 You have some html
 
 Tab 1:
